@@ -54,6 +54,12 @@ spec:
               devPluginVersion:
                 description: version of the device plugin image
                 type: string
+              deviceAgentImage:
+                description: QAIC Device Agent image
+                type: string
+              deviceAgentVersion:
+                description: version of the Device Agent image
+                type: string
               devicePluginImage:
                 description: device plugin image
                 type: string
@@ -80,12 +86,6 @@ spec:
                 description: Selector describes on which nodes the AIC Operator should
                   enable the AIC device.
                 type: object
-              socResetImage:
-                description: SOC Reset image
-                type: string
-              socResetVersion:
-                description: version of the SOC Reset image
-                type: string
               sourceImage:
                 description: defines image that includes driver source and firmware
                 type: string
@@ -95,11 +95,11 @@ spec:
                 type: boolean
             required:
             - devPluginVersion
+            - deviceAgentImage
+            - deviceAgentVersion
             - devicePluginImage
             - driversImage
             - driversVersion
-            - socResetImage
-            - socResetVersion
             - sourceImage
             type: object
           status:
@@ -564,7 +564,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: ghcr.io/quic/cloud_ai_openshift_operator:0.3.0 ##Replace the image tag to use a different version of Operator
+        image: ghcr.io/quic/cloud_ai_openshift_operator:latest ##Replace the image tag to use a different version of Operator
         imagePullPolicy: Always
         livenessProbe:
           httpGet:

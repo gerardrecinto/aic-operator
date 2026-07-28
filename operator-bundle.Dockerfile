@@ -33,4 +33,4 @@ COPY bundle/metadata /metadata/
 COPY bundle/tests/scorecard /tests/scorecard/
 # Include license and location information
 LABEL org.opencontainers.image.source https://github.com/quic/cloud-ai-containers
-COPY operands/src_img_build/CONTAINER_LICENSE.txt /licenses/
+COPY operands/kmd_src_img_build/CONTAINER_LICENSE.txt /licenses/

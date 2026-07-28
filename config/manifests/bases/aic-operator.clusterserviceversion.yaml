@@ -60,10 +60,10 @@ spec:
   - name: AIC Operator
     url: https://github.com/quic/aic-operator
   maintainers:
-  - email: quic_vmellemp@quicinc.com
-    name: quic_vmellemp
-  - email: quic_carls@quicinc.com
-    name: quic_carls
+  - email: vmellemp@qti.qualcomm.com
+    name: Vijaya Ramarao Mellempudi
+  - email: carls@qti.qualcomm.com
+    name: Carl Streeter
   maturity: alpha
   provider:
     name: Qualcomm Technologies, Inc.

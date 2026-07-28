@@ -68,11 +68,11 @@ spec:
                 description: Selector describes on which nodes the AIC Operator should
                   enable the AIC device.
                 type: object
-              socResetImage:
-                description: SOC Reset image
+              deviceAgentImage:
+                description: QAIC Device Agent image
                 type: string
-              socResetVersion:
-                description: version of the SOC Reset image
+              deviceAgentVersion:
+                description: version of the QAIC Device Agent image
                 type: string
               sourceImage:
                 description: defines image that includes driver source and firmware
@@ -86,8 +86,8 @@ spec:
             - devicePluginImage
             - driversImage
             - driversVersion
-            - socResetImage
-            - socResetVersion
+            - deviceAgentImage
+            - deviceAgentVersion
             - sourceImage
             type: object
           status:

@@ -3,7 +3,7 @@ Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 SPDX-License-Identifier: BSD-3-Clause-Clear.
 */
 
-package socreset
+package deviceagent
 
 import (
 	_ "embed"
@@ -20,26 +20,27 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 )
 
-type SOCResetAPI interface {
-	SetSOCResetDSasDesired(socresetdsObj *appsv1.DaemonSet, aic *aicv1.AIC) error
+type DeviceAgentAPI interface {
+	SetDeviceAgentDSasDesired(deviceagentdsObj *appsv1.DaemonSet, aic *aicv1.AIC) error
 }
 
-type socReset struct {
+type deviceAgent struct {
 	client client.Client
 	scheme *runtime.Scheme
 }
 
-func NewSOCReset(client client.Client, scheme *runtime.Scheme) SOCResetAPI {
-	return &socReset{
+func NewDeviceAgent(client client.Client, scheme *runtime.Scheme) DeviceAgentAPI {
+	return &deviceAgent{
 		client: client,
 		scheme: scheme,
 	}
 }
 
-func (socreset_struct *socReset) SetSOCResetDSasDesired(dsObj *appsv1.DaemonSet, aic *aicv1.AIC) error {
+func (deviceagent_struct *deviceAgent) SetDeviceAgentDSasDesired(dsObj *appsv1.DaemonSet, aic *aicv1.AIC) error {
 	if dsObj == nil {
 		return fmt.Errorf("daemon set is not initialized, zero pointer")
 	}
+
 	containerPorts := []v1.ContainerPort{
 		{
 			Name:          "qmonitor-grpc",
@@ -47,12 +48,14 @@ func (socreset_struct *socReset) SetSOCResetDSasDesired(dsObj *appsv1.DaemonSet,
 			Protocol:      v1.ProtocolTCP,
 		},
 	}
+
 	containerVolumeMounts := []v1.VolumeMount{
 		{
 			Name:      "socreset-state",
 			MountPath: "/var/lib",
 		},
 	}
+
 	hostPathDirectory := v1.HostPathDirectory
 	volumes := []v1.Volume{
 		{
@@ -65,6 +68,7 @@ func (socreset_struct *socReset) SetSOCResetDSasDesired(dsObj *appsv1.DaemonSet,
 			},
 		},
 	}
+
 	lifecyclehandler := v1.LifecycleHandler{
 		Exec: &v1.ExecAction{
 			Command: []string{"/bin/bash", "-c", `
@@ -83,7 +87,7 @@ func (socreset_struct *socReset) SetSOCResetDSasDesired(dsObj *appsv1.DaemonSet,
 	}
 
 	matchLabels := map[string]string{"daemonset-name": aic.Name}
-	//Below labels ensure that socreset Pod is created on nodes where qaic devices are present and boot-up is complete.
+	//Below labels ensure that device-agent Pod is created on nodes where qaic devices are present and boot-up is complete.
 	devicepluginReady := fmt.Sprintf("kmm.node.kubernetes.io/%s.%s.device-plugin-ready", aic.Namespace, aic.Name)
 	nodeSelector := map[string]string{"qualcomm.com/qaic": "true",
 		devicepluginReady: ""}
@@ -96,9 +100,9 @@ func (socreset_struct *socReset) SetSOCResetDSasDesired(dsObj *appsv1.DaemonSet,
 			Spec: v1.PodSpec{
 				Containers: []v1.Container{
 					{
-						Command:         []string{"/bin/bash", "-c", "/opt/qti-aic/scripts/qaic-socreset.sh"},
-						Name:            "qaic-socreset-container",
-						Image:           aic.Spec.SocResetImage + ":" + aic.Spec.SocResetVersion,
+						Command:         []string{"/bin/bash", "-c", "/opt/qti-aic/scripts/qaic-device-agent.sh"},
+						Name:            "qaic-device-agent-container",
+						Image:           aic.Spec.DeviceAgentImage + ":" + aic.Spec.DeviceAgentVersion,
 						ImagePullPolicy: v1.PullAlways,
 						SecurityContext: &v1.SecurityContext{Privileged: ptr.To(true)},
 						Ports:           containerPorts,
@@ -113,5 +117,5 @@ func (socreset_struct *socReset) SetSOCResetDSasDesired(dsObj *appsv1.DaemonSet,
 		},
 	}
 
-	return controllerutil.SetControllerReference(aic, dsObj, socreset_struct.scheme)
+	return controllerutil.SetControllerReference(aic, dsObj, deviceagent_struct.scheme)
 }

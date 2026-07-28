@@ -150,7 +150,7 @@ cleanup() {
 
 # Main execution
 main() {
-    log "=== QAIC SOC Reset Script Started ==="
+    log "=== QAIC Device Agent Script Started ==="
 
     # Set up signal handlers
     trap cleanup SIGTERM SIGINT
@@ -172,8 +172,8 @@ main() {
     sleep "$DEVICE_BOOT_WAIT"
 
     if ! wait_for_devices; then
-        log_error "Devices not ready after reset"
-        log "QMonitor requires ready devices, cannot start"
+        log_error "QAIC devices not ready after reset."
+        log "QMonitor requires ready devices, cannot start."
         log "Keeping container alive for debugging..."
         exec tail -f /dev/null
     fi

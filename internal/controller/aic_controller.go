@@ -42,9 +42,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	aicv1 "github.com/quic/aic-operator/api/v1"
+	"github.com/quic/aic-operator/internal/deviceagent"
 	"github.com/quic/aic-operator/internal/kmmmodule"
 	"github.com/quic/aic-operator/internal/nfdrule"
-	"github.com/quic/aic-operator/internal/socreset"
 )
 
 // AICReconciler reconciles an AIC object
@@ -71,8 +71,8 @@ func NewAICReconciler(
 	scheme *runtime.Scheme,
 	kmmHandler kmmmodule.KMMModuleAPI,
 	nfdHandler nfdrule.NFDRuleAPI,
-	socResetHandler socreset.SOCResetAPI) *AICReconciler {
-	helper := newAICReconcilerHelper(client, kmmHandler, nfdHandler, socResetHandler)
+	deviceAgentHandler deviceagent.DeviceAgentAPI) *AICReconciler {
+	helper := newAICReconcilerHelper(client, kmmHandler, nfdHandler, deviceAgentHandler)
 	return &AICReconciler{
 		Client: client,
 		Scheme: scheme,
@@ -142,8 +142,8 @@ func (r *AICReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	if err != nil {
 		return res, fmt.Errorf("failed to handle KMM module for AIC %s: %v", req.NamespacedName, err)
 	}
-	logger.Info("start SOC Reset DaemonSet reconciliation")
-	err = r.helper.handleAICSOCReset(ctx, aic)
+	logger.Info("start Device-Agent DaemonSet reconciliation")
+	err = r.helper.handleAICDeviceAgent(ctx, aic)
 	if err != nil {
 		return res, fmt.Errorf("failed to handle SOC Reset DaemonSet creation %s: %v", req.NamespacedName, err)
 	}
@@ -167,23 +167,23 @@ type AICReconcilerHelperAPI interface {
 	handleBuildConfigMap(ctx context.Context, devConfig *aicv1.AIC, useInTree bool) error
 	handleKMMModule(ctx context.Context, devConfig *aicv1.AIC, loadedMods aicv1.LoadedModules) error
 	handleAICNFDRule(ctx context.Context, aic *aicv1.AIC) error
-	handleAICSOCReset(ctx context.Context, aic *aicv1.AIC) error
+	handleAICDeviceAgent(ctx context.Context, aic *aicv1.AIC) error
 }
 
 type AICReconcilerHelper struct {
-	client          client.Client
-	kmmHandler      kmmmodule.KMMModuleAPI
-	nfdHandler      nfdrule.NFDRuleAPI
-	socResetHandler socreset.SOCResetAPI
+	client             client.Client
+	kmmHandler         kmmmodule.KMMModuleAPI
+	nfdHandler         nfdrule.NFDRuleAPI
+	deviceAgentHandler deviceagent.DeviceAgentAPI
 }
 
 func newAICReconcilerHelper(client client.Client,
-	kmmHandler kmmmodule.KMMModuleAPI, nfdHandler nfdrule.NFDRuleAPI, socResetHandler socreset.SOCResetAPI) AICReconcilerHelperAPI {
+	kmmHandler kmmmodule.KMMModuleAPI, nfdHandler nfdrule.NFDRuleAPI, deviceAgentHandler deviceagent.DeviceAgentAPI) AICReconcilerHelperAPI {
 	return &AICReconcilerHelper{
-		client:          client,
-		kmmHandler:      kmmHandler,
-		nfdHandler:      nfdHandler,
-		socResetHandler: socResetHandler,
+		client:             client,
+		kmmHandler:         kmmHandler,
+		nfdHandler:         nfdHandler,
+		deviceAgentHandler: deviceAgentHandler,
 	}
 }
 func (aicrh *AICReconcilerHelper) getRequestedAIC(ctx context.Context, namespacedName types.NamespacedName) (*aicv1.AIC, error) {
@@ -340,22 +340,22 @@ func (aicrh *AICReconcilerHelper) handleAICNFDRule(ctx context.Context, aic *aic
 
 }
 
-func (aicrh *AICReconcilerHelper) handleAICSOCReset(ctx context.Context, aic *aicv1.AIC) error {
-	socresetdsObj := &appsv1.DaemonSet{
+func (aicrh *AICReconcilerHelper) handleAICDeviceAgent(ctx context.Context, aic *aicv1.AIC) error {
+	deviceagentdsObj := &appsv1.DaemonSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: aic.Namespace,
-			Name:      aic.Name + "-qaic-socreset-ds",
+			Name:      aic.Name + "-qaic-device-agent-ds",
 		},
 	}
 	logger := log.FromContext(ctx)
-	opRes, err := controllerutil.CreateOrPatch(ctx, aicrh.client, socresetdsObj, func() error {
-		return aicrh.socResetHandler.SetSOCResetDSasDesired(socresetdsObj, aic)
+	opRes, err := controllerutil.CreateOrPatch(ctx, aicrh.client, deviceagentdsObj, func() error {
+		return aicrh.deviceAgentHandler.SetDeviceAgentDSasDesired(deviceagentdsObj, aic)
 	})
 	if err != nil {
 		return err
 	}
 
-	logger.Info("Reconciled SOC Reset DaemonSet", "name", socresetdsObj.Name, "result", opRes)
+	logger.Info("Reconciled Device Agent DaemonSet", "name", deviceagentdsObj.Name, "result", opRes)
 	return nil
 }
 func getDockerfileCMName(aic *aicv1.AIC, useInTree bool) string {

@@ -51,11 +51,11 @@ type AICSpec struct {
 	// version of the device plugin image
 	DevPluginVersion string `json:"devPluginVersion"`
 
-	// SOC Reset image
-        SocResetImage string `json:"socResetImage"`
+	// QAIC Device Agent image
+	DeviceAgentImage string `json:"deviceAgentImage"`
 
-        // version of the SOC Reset image
-        SocResetVersion string `json:"socResetVersion"`
+	// version of the Device Agent image
+	DeviceAgentVersion string `json:"deviceAgentVersion"`
 
 	// pull secrets used for pull/setting images used by operator
 	// +optional

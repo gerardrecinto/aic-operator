@@ -13,7 +13,7 @@ on OpenShift clusters by automating the configuration and installation of their 
 Linux device drivers and its Kubernetes Device Plugin."
 
 RUN yum update -y && yum install -y unzip zip pciutils sudo libxcrypt-compat
-COPY qaic-socreset.sh /opt/qti-aic/scripts/
+COPY qaic-device-agent.sh /opt/qti-aic/scripts/
 
 # Install platform sdk
 # Install in place from temp directory (don't copy SDK zip into image)

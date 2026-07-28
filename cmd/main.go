@@ -47,9 +47,9 @@ import (
 	nfr "github.com/openshift/cluster-nfd-operator/api/v1alpha1"
 	aicv1 "github.com/quic/aic-operator/api/v1"
 	"github.com/quic/aic-operator/internal/controller"
+	"github.com/quic/aic-operator/internal/deviceagent"
 	"github.com/quic/aic-operator/internal/kmmmodule"
 	"github.com/quic/aic-operator/internal/nfdrule"
-	"github.com/quic/aic-operator/internal/socreset"
 	kmmv1beta1 "github.com/rh-ecosystem-edge/kernel-module-management/api/v1beta1"
 	//+kubebuilder:scaffold:imports
 )
@@ -151,11 +151,11 @@ func main() {
 	client := mgr.GetClient()
 	kmmHandler := kmmmodule.NewKMMModule(client, scheme)
 	nfdHandler := nfdrule.NewNFDRule(client, scheme)
-	socresetHandler := socreset.NewSOCReset(client, scheme)
+	deviceagentHandler := deviceagent.NewDeviceAgent(client, scheme)
 	aicr := controller.NewAICReconciler(
 		client,
 		mgr.GetScheme(),
-		kmmHandler, nfdHandler, socresetHandler)
+		kmmHandler, nfdHandler, deviceagentHandler)
 
 	if err = aicr.SetupWithManager(mgr, reconciliationInterval); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "AIC")

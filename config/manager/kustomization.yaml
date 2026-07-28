@@ -5,4 +5,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: ghcr.io/quic/cloud_ai_openshift_operator
-  newTag: 0.3.0
+  newTag: latest
