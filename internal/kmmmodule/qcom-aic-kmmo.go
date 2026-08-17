@@ -32,7 +32,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"github.com/a8m/envsubst/parse"
-	aicv1 "github.com/quic/aic-operator/api/v1"
+	aicv1 "github.com/qualcomm/aic-operator/api/v1"
 	kmmv1beta1 "github.com/rh-ecosystem-edge/kernel-module-management/api/v1beta1"
 )
 

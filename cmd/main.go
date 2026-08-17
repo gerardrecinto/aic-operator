@@ -45,11 +45,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	nfr "github.com/openshift/cluster-nfd-operator/api/v1alpha1"
-	aicv1 "github.com/quic/aic-operator/api/v1"
-	"github.com/quic/aic-operator/internal/controller"
-	"github.com/quic/aic-operator/internal/deviceagent"
-	"github.com/quic/aic-operator/internal/kmmmodule"
-	"github.com/quic/aic-operator/internal/nfdrule"
+	aicv1 "github.com/qualcomm/aic-operator/api/v1"
+	"github.com/qualcomm/aic-operator/internal/controller"
+	"github.com/qualcomm/aic-operator/internal/deviceagent"
+	"github.com/qualcomm/aic-operator/internal/kmmmodule"
+	"github.com/qualcomm/aic-operator/internal/nfdrule"
 	kmmv1beta1 "github.com/rh-ecosystem-edge/kernel-module-management/api/v1beta1"
 	//+kubebuilder:scaffold:imports
 )
@@ -62,7 +62,7 @@ var (
 	// LeaderElectionID is a unique identifier used for leader election.
 	// It combines a unique prefix with the operator's domain.
 	// This must remain consistent across operator versions to maintain leadership during upgrades.
-	leaderElectionID = "aic-operator-lock.quicinc.com"
+	leaderElectionID = "aic-operator-lock.qualcomm.com"
 )
 
 func init() {

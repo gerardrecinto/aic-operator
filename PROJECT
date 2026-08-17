@@ -2,22 +2,22 @@
 # This file is used to track the info used to scaffold your project
 # and allow the plugins properly work.
 # More info: https://book.kubebuilder.io/reference/project-config.html
-domain: quicinc.com
+domain: qualcomm.com
 layout:
 - go.kubebuilder.io/v4
 plugins:
   manifests.sdk.operatorframework.io/v2: {}
   scorecard.sdk.operatorframework.io/v2: {}
 projectName: aic-operator
-repo: github.com/quic/aic-operator
+repo: github.com/qualcomm/aic-operator
 resources:
 - api:
     crdVersion: v1
     namespaced: true
   controller: true
-  domain: quicinc.com
+  domain: qualcomm.com
   group: aic
   kind: AIC
-  path: github.com/quic/aic-operator/api/v1
+  path: github.com/qualcomm/aic-operator/api/v1
   version: v1
 version: "3"

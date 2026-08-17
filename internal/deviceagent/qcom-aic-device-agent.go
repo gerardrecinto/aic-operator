@@ -16,7 +16,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	aicv1 "github.com/quic/aic-operator/api/v1"
+	aicv1 "github.com/qualcomm/aic-operator/api/v1"
 	appsv1 "k8s.io/api/apps/v1"
 )
 

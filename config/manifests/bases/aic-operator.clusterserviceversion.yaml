@@ -20,7 +20,7 @@ metadata:
     features.operators.openshift.io/token-auth-azure: "false"
     features.operators.openshift.io/token-auth-gcp: "false"
     provider: Qualcomm Technologies, Inc.
-    repository: https://github.com/quic/aic-operator
+    repository: https://github.com/qualcomm/aic-operator
     support: Qualcomm Technologies, Inc.
   name: aic-operator.v0.0.0
   namespace: placeholder
@@ -31,7 +31,7 @@ spec:
     - description: AIC is the Schema for the aics API
       displayName: AIC
       kind: AIC
-      name: aics.aic.quicinc.com
+      name: aics.aic.qualcomm.com
       version: v1
   description: The Openshift Operator enables the Qualcomm® Cloud AI series of hardware
     on OpenShift clusters by automating the configuration and installation of their
@@ -58,7 +58,7 @@ spec:
   - AIC-Operator
   links:
   - name: AIC Operator
-    url: https://github.com/quic/aic-operator
+    url: https://github.com/qualcomm/aic-operator
   maintainers:
   - email: vmellemp@qti.qualcomm.com
     name: Vijaya Ramarao Mellempudi
@@ -67,7 +67,7 @@ spec:
   maturity: alpha
   provider:
     name: Qualcomm Technologies, Inc.
-    url: https://github.com/quic/aic-operator
+    url: https://github.com/qualcomm/aic-operator
   relatedImages:
   - image: ghcr.io/quic/cloud_ai_openshift_operator@sha256:e0b58ba86208a185fd0978077d8e807e747393017e1bef57b72200e47bdd6888
     name: cloud_ai_openshift_operator-e0b58ba86208a185fd0978077d8e807e747393017e1bef57b72200e47bdd6888

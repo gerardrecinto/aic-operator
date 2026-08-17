@@ -21,7 +21,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	aicv1 "github.com/quic/aic-operator/api/v1"
+	aicv1 "github.com/qualcomm/aic-operator/api/v1"
 	//+kubebuilder:scaffold:imports
 )
 

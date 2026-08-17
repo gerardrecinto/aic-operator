@@ -28,8 +28,8 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 # This variable is used to construct full image tags for bundle and catalog images.
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
-# quicinc.com/cloud_ai_openshift_operator-bundle:$VERSION and quicinc.com/cloud_ai_openshift_operator-catalog:$VERSION.
-IMAGE_TAG_BASE ?= quicinc.com/cloud_ai_openshift_operator
+# qualcomm.com/cloud_ai_openshift_operator-bundle:$VERSION and qualcomm.com/cloud_ai_openshift_operator-catalog:$VERSION.
+IMAGE_TAG_BASE ?= qualcomm.com/cloud_ai_openshift_operator
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)

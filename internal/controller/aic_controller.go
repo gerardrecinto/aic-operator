@@ -41,10 +41,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	aicv1 "github.com/quic/aic-operator/api/v1"
-	"github.com/quic/aic-operator/internal/deviceagent"
-	"github.com/quic/aic-operator/internal/kmmmodule"
-	"github.com/quic/aic-operator/internal/nfdrule"
+	aicv1 "github.com/qualcomm/aic-operator/api/v1"
+	"github.com/qualcomm/aic-operator/internal/deviceagent"
+	"github.com/qualcomm/aic-operator/internal/kmmmodule"
+	"github.com/qualcomm/aic-operator/internal/nfdrule"
 )
 
 // AICReconciler reconciles an AIC object
@@ -54,9 +54,9 @@ type AICReconciler struct {
 	helper AICReconcilerHelperAPI
 }
 
-//+kubebuilder:rbac:groups=aic.quicinc.com,resources=aics,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=aic.quicinc.com,resources=aics/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=aic.quicinc.com,resources=aics/finalizers,verbs=update
+//+kubebuilder:rbac:groups=aic.qualcomm.com,resources=aics,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=aic.qualcomm.com,resources=aics/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=aic.qualcomm.com,resources=aics/finalizers,verbs=update
 //+kubebuilder:rbac:groups=kmm.sigs.x-k8s.io,resources=modules,verbs=get;list;watch;create;patch;update;delete
 //+kubebuilder:rbac:groups=kmm.sigs.x-k8s.io,resources=modules/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=nfd.openshift.io,resources=nodefeaturerules,verbs=get;list;watch;create;update;patch;delete

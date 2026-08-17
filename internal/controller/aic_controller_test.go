@@ -16,7 +16,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	aicv1 "github.com/quic/aic-operator/api/v1"
+	aicv1 "github.com/qualcomm/aic-operator/api/v1"
 )
 
 var _ = Describe("AIC Controller", func() {

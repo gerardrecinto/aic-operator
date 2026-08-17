@@ -1,4 +1,4 @@
-module github.com/quic/aic-operator
+module github.com/qualcomm/aic-operator
 
 go 1.23.9
 

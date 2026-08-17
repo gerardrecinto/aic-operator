@@ -1,4 +1,4 @@
-apiVersion: aic.quicinc.com/v1
+apiVersion: aic.qualcomm.com/v1
 kind: AIC
 metadata:
   labels:

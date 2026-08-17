@@ -16,9 +16,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
-  name: aics.aic.quicinc.com
+  name: aics.aic.qualcomm.com
 spec:
-  group: aic.quicinc.com
+  group: aic.qualcomm.com
   names:
     kind: AIC
     listKind: AICList
@@ -227,7 +227,7 @@ metadata:
   name: aic-operator-manager-role
 rules:
 - apiGroups:
-  - aic.quicinc.com
+  - aic.qualcomm.com
   resources:
   - aics
   verbs:
@@ -239,13 +239,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - aic.quicinc.com
+  - aic.qualcomm.com
   resources:
   - aics/finalizers
   verbs:
   - update
 - apiGroups:
-  - aic.quicinc.com
+  - aic.qualcomm.com
   resources:
   - aics/status
   verbs:

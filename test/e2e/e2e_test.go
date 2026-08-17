@@ -13,7 +13,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/quic/aic-operator/test/utils"
+	"github.com/qualcomm/aic-operator/test/utils"
 )
 
 const namespace = "aic-operator-system"

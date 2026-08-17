@@ -158,16 +158,16 @@ For full KMM configuration options see the
 
 ```sh
 # Latest (uses the image tag committed on the main branch)
-oc apply -k https://github.com/quic/aic-operator/config/default
+oc apply -k https://github.com/qualcomm/aic-operator/config/default
 
 # Pin to a specific release — the kustomization.yaml at that tag already has the
 # correct image version, so no substitution is needed
-oc apply -k https://github.com/quic/aic-operator/config/default?ref=v0.3.0
+oc apply -k https://github.com/qualcomm/aic-operator/config/default?ref=v0.3.0
 ```
 
 > The image tag is managed in `config/manager/kustomization.yaml` in the repository.
 > Each release tag sets the correct operator image version — use `?ref=<tag>` to select
-> a release (see [GitHub releases](https://github.com/quic/aic-operator/releases)).
+> a release (see [GitHub releases](https://github.com/qualcomm/aic-operator/releases)).
 > This command creates the `aic-operator-system` namespace, registers the CRD, and
 > deploys the controller in one step. When using this option:
 > - Skip the `oc create namespace` command in step 3.
@@ -192,7 +192,7 @@ environment. The `${KERNEL_VERSION}` token in `driversImage` is substituted
 automatically by KMM at build time — leave it as-is.
 
 ```yaml
-apiVersion: aic.quicinc.com/v1
+apiVersion: aic.qualcomm.com/v1
 kind: AIC
 metadata:
   name: aic-sample

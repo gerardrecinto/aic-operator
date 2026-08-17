@@ -4,9 +4,9 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
-  name: aics.aic.quicinc.com
+  name: aics.aic.qualcomm.com
 spec:
-  group: aic.quicinc.com
+  group: aic.qualcomm.com
   names:
     kind: AIC
     listKind: AICList
@@ -42,6 +42,12 @@ spec:
               devPluginVersion:
                 description: version of the device plugin image
                 type: string
+              deviceAgentImage:
+                description: QAIC Device Agent image
+                type: string
+              deviceAgentVersion:
+                description: version of the Device Agent image
+                type: string
               devicePluginImage:
                 description: device plugin image
                 type: string
@@ -68,12 +74,6 @@ spec:
                 description: Selector describes on which nodes the AIC Operator should
                   enable the AIC device.
                 type: object
-              deviceAgentImage:
-                description: QAIC Device Agent image
-                type: string
-              deviceAgentVersion:
-                description: version of the QAIC Device Agent image
-                type: string
               sourceImage:
                 description: defines image that includes driver source and firmware
                 type: string
@@ -83,11 +83,11 @@ spec:
                 type: boolean
             required:
             - devPluginVersion
+            - deviceAgentImage
+            - deviceAgentVersion
             - devicePluginImage
             - driversImage
             - driversVersion
-            - deviceAgentImage
-            - deviceAgentVersion
             - sourceImage
             type: object
           status:

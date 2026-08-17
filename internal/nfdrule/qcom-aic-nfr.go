@@ -21,7 +21,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	nfr "github.com/openshift/cluster-nfd-operator/api/v1alpha1"
-	aicv1 "github.com/quic/aic-operator/api/v1"
+	aicv1 "github.com/qualcomm/aic-operator/api/v1"
 )
 
 const (
