@@ -6,16 +6,19 @@
 #
 # -----------------------------------------------------------------------------
 
+set -eo pipefail # be more strict about non-zero exits and unset var substitutions
+
 BUILD_TYPE=""
-TOOLS_NEEDED=""
+declare -a TOOLS_NEEDED
 FW_INPUT=$1
 KMD_INPUT=$2
 
-SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 if [ $# != 2 ] ; then
   echo "usage:"
-  echo "./make_src_root.sh qaic-fw.pkg qaic-kmd.pkg"
+  echo "./make_src_root.sh qaic-fw.rpm qaic-kmd.rpm"
+  echo "-----------------OR------------------------"
+  echo "./make_src_root.sh qaic-fw.deb qaic-kmd.deb"
   exit 255
 fi
 
@@ -24,7 +27,7 @@ if [ "${FW_INPUT:(-3)}" != "${KMD_INPUT:(-3)}" ] ; then
   exit 255
 elif [ "${FW_INPUT:(-3)}" == "deb" ] ; then
   BUILD_TYPE="deb"
-  TOOLS_NEEDED=( "ar" "tar" )
+  TOOLS_NEEDED=( "ar" "tar" "zstd")
 elif [ "${FW_INPUT:(-3)}" == "rpm" ] ; then
   BUILD_TYPE="rpm"
   TOOLS_NEEDED=( "rpm2cpio" "cpio" )
@@ -60,35 +63,64 @@ fi
 SRC_ROOTDIR=$(pwd)/src_rootdir
 mkdir -p "$SRC_ROOTDIR"/{firmware,src}
 TMP_DIR=$(pwd)/tmp_dir
-mkdir "$TMP_DIR"
+mkdir -p "$TMP_DIR"
+trap 'rm -rf "$TMP_DIR"' EXIT
 
-cp $FW_PKG $TMP_DIR
-cp $KMD_PKG $TMP_DIR
+function extract_deb() {
+  local pkg=$1
+  local data_tar
+
+  rm -f data.tar.*
+  ar x "$pkg"
+
+  data_tar=""
+  for candidate in data.tar.* ; do
+    if [ -f "$candidate" ] ; then
+      data_tar=$candidate
+      break
+    fi
+  done
+  if [ -z "$data_tar" ] ; then
+    echo "no data.tar.* member found in $pkg"
+    exit 255
+  fi
+
+  # GNU tar auto-detects gz/xz/bz2, and zstd too from 1.31 onward; fall back to
+  # the standalone zstd binary for older tars. The KMD package ships data.tar.zst
+  # while the FW package ships data.tar.gz, so both paths get exercised.
+  if ! tar -xf "$data_tar" -C ./ ; then
+    if [ "${data_tar##*.}" == "zst" ] && command -v zstd &> /dev/null ; then
+      zstd -dc "$data_tar" | tar -xf - -C ./
+    elif [ "${data_tar##*.}" == "zst" ] ; then
+      echo "$pkg is zstd-compressed but this host has neither tar >= 1.31 nor zstd"
+      echo "install zstd (or a newer tar) and re-run"
+      exit 255
+    else
+      echo "cannot decompress $data_tar from $pkg"
+      exit 255
+    fi
+  fi
+}
 
 pushd $TMP_DIR &> /dev/null
 case ${BUILD_TYPE} in
 "deb")
-  ar x $FW_PKG && tar -xf data.tar.gz -C ./
-  ar x $KMD_PKG && tar -xf data.tar.xz -C ./
-  echo "extraction complete to $SRC_ROOTDIR"
+  extract_deb "$FW_PKG"
+  extract_deb "$KMD_PKG"
 ;;
 "rpm")
   rpm2cpio $FW_PKG | cpio -idmv
   rpm2cpio $KMD_PKG | cpio -idmv
-  echo "extraction complete to $SRC_ROOTDIR"
 ;;
 *)
   echo "invalid build-type = ${BUILD_TYPE}"
   rmdir $SRC_ROOTDIR
   popd &> /dev/null
-  rm -rf $TMP_DIR
   exit 255
 ;;
 esac
+echo "extraction complete to $SRC_ROOTDIR"
 cp -r ./lib/firmware/* $SRC_ROOTDIR/firmware
 cp -r ./opt/qti-aic/firmware/fw2_swe.json $SRC_ROOTDIR/firmware
 cp -r ./usr/src/qaic-*/* $SRC_ROOTDIR/src
 popd &> /dev/null
-rm -rf $TMP_DIR
-
-

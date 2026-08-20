@@ -1,7 +1,30 @@
+# Extract the source rootdir from the platform SDK. This stage is discarded, so the
+# extraction toolchain is never shipped and the host needs only docker to extract.
+FROM registry.access.redhat.com/ubi9/ubi AS extractor
+ARG ARCHITECTURE=x86_64
+# unzip reads the SDK archive; rpm2cpio (from rpm, already in the base image) and
+# cpio unpack the packages. rpm2cpio decompresses the payload through librpm, so
+# no standalone decompressor is needed even though el9 payloads are zstd.
+RUN --mount=type=cache,target=/var/cache/dnf \
+    yum install -y unzip rpm cpio
+# COPY --link with a file resets the parent directory's permissions to 755, so
+# use a dedicated working directory rather than one we care about.
+WORKDIR /build
+
+COPY --link qaic-platform-sdk-*.zip .
+# Unzip in its own layer so editing make_src_root.sh below does not re-extract the
+# SDK. unzip exits non-zero if the pattern matches nothing, so a layout change in
+# the archive fails the build here rather than producing an empty source tree.
+RUN unzip -q -j qaic-platform-sdk-*.zip \
+        "qaic-platform-sdk-*/${ARCHITECTURE}/rpm/rpm/*" -d psdk
+
+COPY --link make_src_root.sh .
+RUN bash make_src_root.sh psdk/qaic-fw-*.rpm psdk/qaic-kmd-*.noarch.rpm
+
+
 FROM registry.access.redhat.com/ubi9/ubi-micro
-ARG SRC_ROOT_DIR
 ARG VERSION=none
-COPY ${SRC_ROOT_DIR} /
+COPY --from=extractor /build/src_rootdir /
 LABEL name="cloud_ai_openshift_operator" \
       maintainer="Qualcomm Technologies, Inc." \
       vendor="Qualcomm Technologies, Inc." \
