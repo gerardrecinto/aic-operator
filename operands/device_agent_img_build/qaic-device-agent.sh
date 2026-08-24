@@ -10,7 +10,7 @@ set -o pipefail
 # Configuration
 readonly SOC_RESET_MARKER="/var/lib/qaic_soc_reset_done"
 readonly FIRMWARE_DIR="/opt/qti-aic/firmware"
-readonly FW_CONFIG_FILE="/var/lib/firmware/fw2_swe.json"
+readonly FW_CONFIG_FILE="/var/lib/firmware/updates/fw2_swe.json"
 readonly QMONITOR_PORT="${QMONITOR_PORT:-62472}"
 readonly DEVICE_BOOT_WAIT="${DEVICE_BOOT_WAIT:-3}"
 readonly MAX_RETRIES="${MAX_RETRIES:-5}"
