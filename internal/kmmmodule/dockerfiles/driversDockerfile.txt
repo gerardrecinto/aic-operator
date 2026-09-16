@@ -26,8 +26,9 @@ RUN microdnf -y install kmod && \
 # Create module directory
 RUN mkdir -p /opt/lib/modules/${KERNEL_FULL_VERSION}
 
-# Copy firmware
+# Copy firmware and other required config
 COPY --from=qaic-kmd-src /firmware/updates /firmware
+COPY --from=qaic-kmd-src /firmware/fw2_swe.json /firmware/
 
 # Copy kernel modules
 COPY --from=kmd_builder /usr/src/qaic-${QAIC_VER}/qaic/qaic.ko /opt/lib/modules/${KERNEL_FULL_VERSION}/
