@@ -71,25 +71,25 @@ NAME           STATUS   ROLES                         AGE    VERSION
 <node-name>    Ready    control-plane,master,worker   209d   v1.29.10+67d3387
 ```
 
-#### Create the operator namespace and image pull secret
+#### Create the operator namespace and registry secret
 
 ```sh
 oc create namespace aic-operator-system
 ```
 
-The `sourceImage`, `devicePluginImage`, and `socResetImage` are hosted on the public
+The `sourceImage`, `devicePluginImage`, and `deviceAgentImage` are hosted on the public
 `ghcr.io/quic` registry and do not require credentials.
 
-The `driversImage` is a kernel-specific image that **you build and push to your own
-registry** using the Dockerfile provided in this repository. Create a pull secret so
-the cluster can pull it:
+KMM builds a kernel-specific driver image inside the cluster and pushes it to the
+repository specified by `spec.driversImage`. The registry credentials must have
+both pull and push permission for that repository.
 
 ```sh
 oc create secret docker-registry <pull-secret-name> \
-  --docker-server=<your-registry-server> \
+  --docker-server=<container-registry-server> \
   --docker-username=<username> \
-  --docker-password=<password> \
-  -n aic-operator-system
+  --docker-password=<password-or-token> \
+  --namespace=aic-operator-system
 ```
 
 > Reference this secret by name in the `AIC` CR under `spec.imageRepoSecret.name`.
@@ -205,12 +205,12 @@ metadata:
     app.kubernetes.io/created-by: aic-operator
 spec:
   sourceImage: "ghcr.io/quic/cloud_ai_qaic_kmd_src"
-  driversImage: "<your-registry-server>/<username>/cloud_ai_qaic_kmd_ko:0.4.0_1.21.4.0_${KERNEL_VERSION}"
-  driversVersion: "0.4.0_1.21.4.0"
+  driversImage: "<your-registry-server>/<username>/cloud_ai_qaic_kmd_ko:0.4.0_1.22.8.1_${KERNEL_VERSION}"
+  driversVersion: "0.4.0_1.22.8.1" # or latest available
   devicePluginImage: "ghcr.io/quic/cloud_ai_k8s_device_plugin"
-  devPluginVersion: "1.21.4.0"
-  socResetImage: "ghcr.io/quic/cloud_ai_socreset"
-  socResetVersion: "0.4.0_1.21.4.0"
+  devPluginVersion: "1.22.8.1"     # or latest available
+  deviceAgentImage: "ghcr.io/quic/cloud_ai_qaic_deviceagent"
+  deviceAgentVersion: "0.4.0_1.22.8.1" # or latest available
   imageRepoSecret:
     name: <pull-secret-name>   # name of the secret created in step 3
 ```

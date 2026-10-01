@@ -110,6 +110,8 @@ func (deviceagent_struct *deviceAgent) SetDeviceAgentDSasDesired(dsObj *appsv1.D
 						Lifecycle:       &lifecycle,
 					},
 				},
+				HostNetwork:        true,
+				DNSPolicy:          v1.DNSClusterFirstWithHostNet,
 				NodeSelector:       nodeSelector,
 				ServiceAccountName: "aic-operator-kmm-device-plugin",
 				Volumes:            volumes,

@@ -15,6 +15,12 @@ Linux device drivers and its Kubernetes Device Plugin."
 RUN yum update -y && yum install -y unzip zip pciutils sudo libxcrypt-compat
 COPY qaic-device-agent.sh /opt/qti-aic/scripts/
 
+RUN yum install -y shadow-utils && \
+    groupadd -o -g 995 qaic && \
+    usermod -aG qaic nobody && \
+    mkdir -p /var/log/qti-aic && \
+    chown 65534:995 /var/log/qti-aic
+
 # Install platform sdk
 # Install in place from temp directory (don't copy SDK zip into image)
 RUN --mount=type=bind,src=.,dst=/mnt \
@@ -52,4 +58,4 @@ RUN ln -s /usr/share/doc/CONTAINER_LICENSE.txt / && \
         exit 1 ; \
     fi
 #set user to non-root. UBI images define 65534 as user "nobody"
-USER 65534:65534
+USER 65534:995
