@@ -36,5 +36,17 @@ COPY --from=kmd_builder /usr/src/qaic-${QAIC_VER}/qrtr/qrtr-mhi.ko /opt/lib/modu
 COPY --from=kmd_builder /usr/src/qaic-${QAIC_VER}/switch/switchtec.ko /opt/lib/modules/${KERNEL_FULL_VERSION}/
 COPY --from=kmd_builder /usr/src/qaic-${QAIC_VER}/mhi/host/mhi.ko /opt/lib/modules/${KERNEL_FULL_VERSION}/
 
+COPY --from=kmd_builder \
+    /lib/modules/${KERNEL_FULL_VERSION}/kernel/net/qrtr/qrtr.ko.xz \
+    /opt/lib/modules/${KERNEL_FULL_VERSION}/kernel/net/qrtr/
+
+COPY --from=kmd_builder \
+    /lib/modules/${KERNEL_FULL_VERSION}/kernel/drivers/gpu/drm/drm.ko.xz \
+    /opt/lib/modules/${KERNEL_FULL_VERSION}/kernel/drivers/gpu/drm/
+
+COPY --from=kmd_builder \
+    /lib/modules/${KERNEL_FULL_VERSION}/kernel/drivers/gpu/drm/scheduler/gpu-sched.ko.xz \
+    /opt/lib/modules/${KERNEL_FULL_VERSION}/kernel/drivers/gpu/drm/scheduler/
+
 # Generate module dependencies
 RUN /usr/sbin/depmod -b /opt ${KERNEL_FULL_VERSION}
